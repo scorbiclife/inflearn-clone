@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { isValidPassword } from "./lib/password-utils";
-import * as jwt from "jsonwebtoken";
+import * as jose from "jose";
 import { JWT } from "next-auth/jwt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -55,11 +55,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   jwt: {
-    encode: async ({ token, secret }) => {
-      return jwt.sign(token as jwt.JwtPayload, secret as string);
+    encode: async ({ token: payload, secret }) => {
+      if (typeof secret !== "string") {
+        throw new Error("Cannot handle non-string secrets");
+      }
+      const secretBuffer = new TextEncoder().encode(secret);
+
+      return new jose.SignJWT(payload!)
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("10m")
+        .sign(secretBuffer);
     },
     decode: async ({ token, secret }) => {
-      return jwt.verify(token as string, secret as string) as JWT;
+      if (typeof secret !== "string") {
+        throw new Error("Cannot handle non-string secrets");
+      }
+      const secretBuffer = new TextEncoder().encode(secret);
+      return (await jose.jwtVerify(token!, secretBuffer)).payload as JWT;
     },
   },
 });
