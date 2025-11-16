@@ -13,11 +13,10 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/user/test')
+  @Get('/user-test')
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
   testUser(@Req() req: Request) {
-    console.log(req.user);
-    return 'ok';
+    return `User email: ${req?.user?.email}`;
   }
 }
