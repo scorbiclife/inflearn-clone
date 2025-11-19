@@ -10,7 +10,6 @@ import {
   UseGuards,
   ParseUUIDPipe,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -19,6 +18,7 @@ import type { Request } from 'express';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { CourseGuard } from './course.guard';
+import { CourseFindAllQueryDto } from './course.controller.dto';
 
 @Controller('course')
 export class CourseController {
@@ -32,18 +32,8 @@ export class CourseController {
   }
 
   @Get()
-  @ApiQuery({ name: 'title', required: false, type: String })
-  @ApiQuery({ name: 'level', required: false, type: String })
-  @ApiQuery({ name: 'categoryId', required: false, type: String })
-  @ApiQuery({ name: 'take', required: false, type: Number })
-  @ApiQuery({ name: 'skip', required: false, type: Number })
-  findAll(
-    @Query('title') title?: string,
-    @Query('level') level?: string,
-    @Query('categoryId') categoryId?: string,
-    @Query('take', ParseIntPipe) take?: number,
-    @Query('skip', ParseIntPipe) skip?: number,
-  ) {
+  findAll(@Query() query: CourseFindAllQueryDto) {
+    const { title, level, categoryId, take, skip } = query;
     const MAX_RECORDS_TO_TAKE = 100;
     const recordsToTake = take
       ? Math.min(take, MAX_RECORDS_TO_TAKE)
