@@ -2,6 +2,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator prismaClassGenerator {
+  provider               = "prisma-class-generator"
+  output                 = "../src/generated/prisma-class"
+  separateRelationFields = false
+  dryRun                = false
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -80,7 +87,7 @@ model Course {
   title            String
   shortDescription String? @map("short_description")
   description      String?
-  thumbnailUrl     String  @map("thumbnail_url")
+  thumbnailUrl     String? @map("thumbnail_url")
   price            Int?    @default(0)
   discountPrice    Int?    @map("discount_price")
   level            String  @default("BEGINNER")
