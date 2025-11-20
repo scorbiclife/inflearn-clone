@@ -9,5 +9,5 @@ popd || exit
 mkdir -p frontend/prisma
 cp backend/prisma/schema.prisma frontend/prisma
 pushd frontend || exit
-pnpm prisma generate --generator client
+pnpm run generate:prisma
 popd || exit
