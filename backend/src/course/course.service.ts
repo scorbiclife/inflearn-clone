@@ -8,14 +8,6 @@ import { Prisma } from '@prisma/client';
 export class CourseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async isAuthorizedToUser(courseId: string, userId: string) {
-    const course = await this.prisma.course.findUnique({
-      where: { id: courseId },
-      select: { instructorId: true },
-    });
-    return course?.instructorId === userId;
-  }
-
   async create(createCourseDto: CreateCourseDto, userId: string) {
     const { categoryIds, ...rest } = createCourseDto;
     const prismaCreateCourseDto = {
