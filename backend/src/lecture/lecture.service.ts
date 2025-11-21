@@ -22,15 +22,18 @@ export class LectureService {
     });
   }
 
-  findOne(id: string) {
-    throw new InternalServerErrorException('Not implemented yet');
+  async findOne(id: string) {
+    return await this.prisma.lecture.findUnique({ where: { id } });
   }
 
-  update(id: string, updateLectureDto: UpdateLectureDto) {
-    throw new InternalServerErrorException('Not implemented yet');
+  async update(id: string, updateLectureDto: UpdateLectureDto) {
+    return await this.prisma.lecture.update({
+      where: { id },
+      data: updateLectureDto,
+    });
   }
 
-  remove(id: string) {
-    throw new InternalServerErrorException('Not implemented yet');
+  async remove(id: string) {
+    return await this.prisma.lecture.delete({ where: { id } });
   }
 }
