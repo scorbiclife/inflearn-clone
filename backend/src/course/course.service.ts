@@ -9,9 +9,11 @@ export class CourseService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createCourseDto: CreateCourseDto, userId: string) {
-    const { categoryIds, ...rest } = createCourseDto;
+    const { categoryIds, title, ...rest } = createCourseDto;
     const prismaCreateCourseDto = {
       ...rest,
+      title,
+      slug: this.slugify(title),
       categories: {
         connect: categoryIds.map((id) => ({ id })),
       },
@@ -20,6 +22,18 @@ export class CourseService {
     return await this.prisma.course.create({
       data: prismaCreateCourseDto,
     });
+  }
+
+  slugify(title: string): string {
+    const slugBase = title
+      .toLocaleLowerCase('en-US')
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    const slugCollisionPreventionSuffix = Math.random()
+      .toString(36)
+      .substring(2, 8);
+    return `${slugBase}-${slugCollisionPreventionSuffix}`;
   }
 
   async findAll({
