@@ -6,10 +6,6 @@ export class CreateCourseDto {
   @IsString()
   title: string;
 
-  @ApiProperty({ description: '코스 URL 슬러그' })
-  @IsString()
-  slug: string;
-
   @ApiProperty({ description: '짧은 설명' })
   @IsString()
   @IsOptional()
