@@ -18,9 +18,11 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import type { Request } from 'express';
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiQuery,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { CourseGuard } from './course.guard';
@@ -38,6 +40,10 @@ export class CourseController {
   @ApiOkResponse({
     description: 'Course created successfully.',
     type: Course,
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
+  @ApiForbiddenResponse({
+    description: 'Insufficient permissions to create course.',
   })
   async create(
     @Body() createCourseDto: CreateCourseDto,
@@ -100,6 +106,10 @@ export class CourseController {
     type: Course,
   })
   @ApiNotFoundResponse({ description: 'Course not found.' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
+  @ApiForbiddenResponse({
+    description: 'Insufficient permissions to update course.',
+  })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCourseDto: UpdateCourseDto,
@@ -117,7 +127,10 @@ export class CourseController {
   @ApiOkResponse({
     description: 'Course deleted successfully.',
   })
-  @ApiNotFoundResponse({ description: 'Course not found.' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
+  @ApiForbiddenResponse({
+    description: 'Insufficient permissions to delete course.',
+  })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.courseService.remove(id);
   }
