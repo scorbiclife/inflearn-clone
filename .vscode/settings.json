@@ -3,5 +3,6 @@
         "authjs",
         "inflearn",
         "uuidv4"
-    ]
+    ],
+    "prisma.pinToPrisma6": true
 }
