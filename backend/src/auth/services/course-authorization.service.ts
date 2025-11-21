@@ -35,4 +35,30 @@ export class CourseAuthorizationService {
       ? await this.canModifyCourseFromUser(section.courseId, userId)
       : false;
   }
+
+  async canCreateLectureFromUser({
+    sectionId,
+    userId,
+  }: {
+    sectionId: string;
+    userId: string;
+  }): Promise<boolean> {
+    return await this.canModifySectionFromUser(sectionId, userId);
+  }
+
+  async canModifyLectureFromUser({
+    lectureId,
+    userId,
+  }: {
+    lectureId: string;
+    userId: string;
+  }): Promise<boolean> {
+    const lecture = await this.prisma.lecture.findUnique({
+      where: { id: lectureId },
+      select: { sectionId: true },
+    });
+    return lecture && lecture.sectionId
+      ? await this.canModifySectionFromUser(lecture.sectionId, userId)
+      : false;
+  }
 }

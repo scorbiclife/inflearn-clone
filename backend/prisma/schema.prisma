@@ -127,7 +127,7 @@ model Lecture {
   title            String
   description      String
   order            Int
-  duration         Int
+  duration         Int?
   isPreview        Boolean @default(false) @map("is_preview")
   sectionId        String? @map("section_id")
   courseId         String? @map("course_id")
