@@ -1,12 +1,12 @@
-import { auth, signOut } from "@/auth";
+import { auth, authUser, signOut } from "@/auth";
 import Link from "next/link";
 
 export default async function Home() {
-  const session = await auth();
-  if (session?.user) {
+  const user = await authUser();
+  if (user) {
     return (
       <div>
-        <p>{`현재 로그인한 유저는 ${session.user.email}입니다.`}</p>
+        <p>{`현재 로그인한 유저는 ${user.email}입니다.`}</p>
         <SignOut />
       </div>
     );
