@@ -8,7 +8,7 @@ export default async function Header(): Promise<JSX.Element> {
   const session = await auth();
 
   return (
-    <header className="w-full bg-white border-b">
+    <header className="sticky top-0 z-10 w-full bg-white border-b">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-12 items-center justify-between">
           {/* Left: Logo */}

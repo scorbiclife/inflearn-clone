@@ -1,4 +1,4 @@
-import { auth, authUser, signOut } from "@/auth";
+import { authUser, signOut } from "@/auth";
 import Link from "next/link";
 
 export default async function Home() {
