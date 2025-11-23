@@ -40,7 +40,7 @@ export default async function Header(): Promise<JSX.Element> {
           {/* Right: User menus */}
           <div className="flex items-center space-x-4">
             <Link
-              href="#"
+              href="/instructor"
               className="text-sm font-medium text-gray-700 hover:text-gray-900">
               지식공유
             </Link>
