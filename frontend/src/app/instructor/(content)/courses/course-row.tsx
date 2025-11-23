@@ -4,10 +4,16 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import type { Course } from "@/generated/openapi-ts";
+import { CourseThumbnail } from "./course-thumbnail";
+import Link from "next/link";
 
 type CourseRowProps = {
   course: Course;
 };
+
+function formatCourseUrl(courseId: string) {
+  return `/course/${courseId}`;
+}
 
 function formatPrice(price?: number, discountPrice?: number): string {
   if (!price || price === 0) return "무료";
@@ -54,18 +60,13 @@ export function CourseRow({ course }: CourseRowProps) {
     <TableRow>
       <TableCell>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-green-600 rounded flex items-center justify-center shrink-0">
-            {course.thumbnailUrl ? (
-              <img
-                src={course.thumbnailUrl}
-                alt={course.title}
-                className="w-full h-full object-cover rounded"
-              />
-            ) : (
-              <span className="text-white font-semibold text-xs">???</span>
-            )}
-          </div>
-          <span className="text-sm">{course.title}</span>
+          <CourseThumbnail
+            thumbnailUrl={course.thumbnailUrl}
+            title={course.title}
+          />
+          <Link href={formatCourseUrl(course.id)} className="text-sm">
+            {course.title}
+          </Link>
         </div>
       </TableCell>
       <TableCell>{course.enrollments?.length || 0}명</TableCell>
