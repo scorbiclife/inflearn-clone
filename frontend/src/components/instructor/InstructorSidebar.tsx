@@ -92,9 +92,15 @@ const menuItems: MenuItem[] = [
 function SidebarItem({ item }: { item: MenuItem }) {
   const pathname = usePathname();
   const Icon = item.icon;
+
+  const normalizedPathname = pathname?.replace(/\/$/, "") || "";
+  const normalizedHref = item.href.replace(/\/$/, "");
+
   const isActive =
-    pathname === item.href ||
-    (item.href !== "/instructor" && pathname?.startsWith(item.href));
+    normalizedHref === "/instructor"
+      ? normalizedPathname === normalizedHref
+      : normalizedPathname === normalizedHref ||
+        normalizedPathname.startsWith(`${normalizedHref}/`);
 
   return (
     <SidebarMenuItem>
@@ -104,7 +110,7 @@ function SidebarItem({ item }: { item: MenuItem }) {
         className={cn(
           "w-full justify-start",
           isActive &&
-            "bg-green-50 text-green-700 font-medium hover:bg-green-100 hover:text-green-800"
+            "font-medium bg-green-50! text-green-700! hover:bg-green-100! hover:text-green-800!"
         )}>
         <Link
           href={item.href}
