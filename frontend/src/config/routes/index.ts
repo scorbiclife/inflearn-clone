@@ -20,4 +20,5 @@ export const ROUTE_INSTRUCTOR_CREATE_COURSE = "/instructor/create-course";
 
 // 강의
 export const formatCourseRoute = (courseId: string) => `/course/${courseId}`;
-
+export const formatCourseEditRoute = (courseId: string) =>
+  `/course/${courseId}/edit/course-info`;

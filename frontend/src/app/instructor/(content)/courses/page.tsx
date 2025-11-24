@@ -1,8 +1,8 @@
-import { courseControllerFindAll } from "@/lib/api";
+import { findAllCourses } from "@/lib/api";
 import { CoursesTable } from "./courses-table";
 
 export default async function CoursesPageContent() {
-  const { data: courses, error } = await courseControllerFindAll();
+  const { data: courses, error } = await findAllCourses();
 
   if (error) {
     return (
