@@ -28,6 +28,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import {
+  ROUTE_INSTRUCTOR,
+  ROUTE_INSTRUCTOR_COURSES,
+  ROUTE_INSTRUCTOR_SUBMISSIONS,
+  ROUTE_INSTRUCTOR_MENTORINGS,
+  ROUTE_INSTRUCTOR_QUESTIONS,
+  ROUTE_INSTRUCTOR_REVIEWS,
+  ROUTE_INSTRUCTOR_NEWS,
+  ROUTE_INSTRUCTOR_INCOMES,
+  ROUTE_INSTRUCTOR_COUPONS,
+  ROUTE_INSTRUCTOR_INQUIRIES,
+  ROUTE_INSTRUCTOR_CREATE_COURSE,
+} from "@/config/routes";
 
 type MenuItem = {
   label: string;
@@ -39,52 +52,52 @@ type MenuItem = {
 const menuItems: MenuItem[] = [
   {
     label: "대시보드",
-    href: "/instructor",
+    href: ROUTE_INSTRUCTOR,
     icon: LayoutDashboard,
   },
   {
     label: "강의 관리",
-    href: "/instructor/courses",
+    href: ROUTE_INSTRUCTOR_COURSES,
     icon: BookOpen,
   },
   {
     label: "미션 관리",
-    href: "/instructor/submissions",
+    href: ROUTE_INSTRUCTOR_SUBMISSIONS,
     icon: Target,
   },
   {
     label: "멘토링 관리",
-    href: "/instructor/mentorings",
+    href: ROUTE_INSTRUCTOR_MENTORINGS,
     icon: Users,
   },
   {
     label: "강의 질문 관리",
-    href: "/instructor/questions",
+    href: ROUTE_INSTRUCTOR_QUESTIONS,
     icon: MessageSquare,
   },
   {
     label: "수강평 리스트",
-    href: "/instructor/reviews",
+    href: ROUTE_INSTRUCTOR_REVIEWS,
     icon: Star,
   },
   {
     label: "새소식 관리",
-    href: "/instructor/news",
+    href: ROUTE_INSTRUCTOR_NEWS,
     icon: Newspaper,
   },
   {
     label: "수익 확인",
-    href: "/instructor/incomes",
+    href: ROUTE_INSTRUCTOR_INCOMES,
     icon: DollarSign,
   },
   {
     label: "쿠폰 관리",
-    href: "/instructor/coupons",
+    href: ROUTE_INSTRUCTOR_COUPONS,
     icon: Ticket,
   },
   {
     label: "수강전 문의 관리",
-    href: "/instructor/inquiries",
+    href: ROUTE_INSTRUCTOR_INQUIRIES,
     icon: HelpCircle,
   },
 ];
@@ -97,7 +110,7 @@ function SidebarItem({ item }: { item: MenuItem }) {
   const normalizedHref = item.href.replace(/\/$/, "");
 
   const isActive =
-    normalizedHref === "/instructor"
+    normalizedHref === ROUTE_INSTRUCTOR
       ? normalizedPathname === normalizedHref
       : normalizedPathname === normalizedHref ||
         normalizedPathname.startsWith(`${normalizedHref}/`);
@@ -137,7 +150,7 @@ export function InstructorSidebar() {
         <Button
           className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
           asChild>
-          <Link href="/instructor/create-course">새 강의 만들기</Link>
+          <Link href={ROUTE_INSTRUCTOR_CREATE_COURSE}>새 강의 만들기</Link>
         </Button>
       </SidebarHeader>
       <SidebarContent>

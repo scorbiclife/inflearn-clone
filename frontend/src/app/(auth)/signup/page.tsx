@@ -4,6 +4,7 @@ import { signUp } from "@/app/actions/auth-actions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { ROUTE_SIGNIN } from "@/config/routes";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function SignUpPage() {
 
     const result = await signUp({ email, password });
     if (result.status === "ok") {
-      redirect("/signin");
+      redirect(ROUTE_SIGNIN);
     }
     if (result.status === "error") {
       alert(result.message);
@@ -73,7 +74,7 @@ export default function SignUpPage() {
         </button>
 
         <Link
-          href="/signin"
+          href={ROUTE_SIGNIN}
           className="px-2 py-1 rounded-sm text-center border border-1 border-gray-700">
           로그인
         </Link>

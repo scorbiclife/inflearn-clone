@@ -6,13 +6,14 @@ import { Pencil, Trash2 } from "lucide-react";
 import type { Course } from "@/generated/openapi-ts";
 import { CourseThumbnail } from "./course-thumbnail";
 import Link from "next/link";
+import { formatCourseRoute } from "@/config/routes";
 
 type CourseRowProps = {
   course: Course;
 };
 
 function formatCourseUrl(courseId: string) {
-  return `/course/${courseId}`;
+  return formatCourseRoute(courseId);
 }
 
 function formatPrice(price?: number, discountPrice?: number): string {

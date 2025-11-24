@@ -1,6 +1,7 @@
 import React, { JSX } from "react";
 import Link from "next/link";
 import { auth } from "@/auth";
+import { ROUTE_HOME, ROUTE_INSTRUCTOR, ROUTE_SIGNIN } from "@/config/routes";
 
 const NAV_ITEMS = ["강의", "로드맵", "멘토링", "커뮤니티"];
 
@@ -13,7 +14,7 @@ export default async function Header(): Promise<JSX.Element> {
         <div className="flex h-12 items-center justify-between">
           {/* Left: Logo */}
           <div className="flex items-center shrink-0">
-            <Link href="/" className="inline-flex items-center">
+            <Link href={ROUTE_HOME} className="inline-flex items-center">
               <img
                 src="https://cdn.inflearn.com/assets/images/header/inflearn_logo_default.svg"
                 alt="inflearn"
@@ -40,7 +41,7 @@ export default async function Header(): Promise<JSX.Element> {
           {/* Right: User menus */}
           <div className="flex items-center space-x-4">
             <Link
-              href="/instructor"
+              href={ROUTE_INSTRUCTOR}
               className="text-sm font-medium text-gray-700 hover:text-gray-900">
               지식공유
             </Link>
@@ -58,7 +59,7 @@ export default async function Header(): Promise<JSX.Element> {
               </button>
             ) : (
               <Link
-                href="/signin"
+                href={ROUTE_SIGNIN}
                 className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-500 transition-colors">
                 로그인
               </Link>
