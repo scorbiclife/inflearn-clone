@@ -6,7 +6,9 @@ import { Pencil, Trash2 } from "lucide-react";
 import type { Course } from "@/generated/openapi-ts";
 import { CourseThumbnail } from "./course-thumbnail";
 import Link from "next/link";
-import { formatCourseRoute } from "@/config/routes";
+import { formatCourseEditRoute, formatCourseRoute } from "@/config/routes";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type CourseRowProps = {
   course: Course;
@@ -57,6 +59,8 @@ function countUnansweredQuestions(
 }
 
 export function CourseRow({ course }: CourseRowProps) {
+  const router = useRouter();
+
   return (
     <TableRow>
       <TableCell>
@@ -85,6 +89,7 @@ export function CourseRow({ course }: CourseRowProps) {
       <TableCell>
         <div className="flex flex-col gap-1">
           <Button
+            onClick={() => router.push(formatCourseEditRoute(course.id))}
             variant="ghost"
             size="sm"
             className="justify-start h-4 text-xs">

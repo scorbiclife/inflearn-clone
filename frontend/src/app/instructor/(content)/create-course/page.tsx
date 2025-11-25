@@ -14,9 +14,7 @@ export default function CreateCoursePage() {
 
   const mutation = useMutation({
     mutationFn: (options: { title: string }) => {
-      return createCourse({
-        body: { title: options.title, categoryIds: [] },
-      });
+      return createCourse({ title });
     },
     onSuccess: (result) => {
       if (result?.data?.id) {

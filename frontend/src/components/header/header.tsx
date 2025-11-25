@@ -2,11 +2,23 @@ import React, { JSX } from "react";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { ROUTE_HOME, ROUTE_INSTRUCTOR, ROUTE_SIGNIN } from "@/config/routes";
+import { JWTExpired, JWTInvalid } from "jose/errors";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 const NAV_ITEMS = ["강의", "로드맵", "멘토링", "커뮤니티"];
 
 export default async function Header(): Promise<JSX.Element> {
-  const session = await auth();
+  let session;
+  try {
+    session = await auth();
+  } catch (error) {
+    if (error instanceof JWTExpired || error instanceof JWTInvalid) {
+      redirect("/signin");
+    } else {
+      toast.error(error instanceof Error ? error.message : "Unknown Error");
+    }
+  }
 
   return (
     <header className="sticky top-0 z-10 w-full bg-white border-b">
