@@ -66,9 +66,20 @@ export class CourseService {
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
+    const { categoryIds, ...courseUpdateData } = updateCourseDto;
+    const updateData: Prisma.CourseUpdateInput = {
+      ...courseUpdateData,
+    };
+
+    if (categoryIds !== undefined) {
+      updateData.categories = {
+        set: categoryIds.map((id) => ({ id })),
+      };
+    }
+
     return await this.prisma.course.update({
       where: { id },
-      data: updateCourseDto,
+      data: updateData,
     });
   }
 
