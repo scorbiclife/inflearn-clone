@@ -7,6 +7,19 @@ import { Button } from "@/components/ui/button";
 import { formatCourseRoute } from "@/config/routes";
 import type { Course } from "@/generated/openapi-ts";
 
+function formatStatus(status: Course["status"]): string {
+  switch (status) {
+    case "DRAFT":
+      return "임시저장";
+    case "PUBLISHED":
+      return "게시됨";
+    case "PENDING":
+      return "대기중";
+    default:
+      return "알 수 없는 상태";
+  }
+}
+
 type CourseEditHeaderProps = {
   course: Course;
   onSave: () => Promise<void>;
@@ -37,7 +50,9 @@ export default function CourseEditHeader({
             <h1 className="text-lg font-semibold text-gray-900">
               {course.title || "제목 없음"}
             </h1>
-            <span className="text-sm text-gray-500">임시저장</span>
+            <span className="text-sm text-gray-500">
+              {formatStatus(course.status)}
+            </span>
           </div>
 
           {/* Right: Action buttons */}
