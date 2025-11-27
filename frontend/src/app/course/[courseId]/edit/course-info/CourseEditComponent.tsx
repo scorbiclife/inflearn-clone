@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useState,
-  type ChangeEvent,
-  type ReactNode,
-} from "react";
+import { useState, type ChangeEvent, type ReactNode } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -88,17 +84,6 @@ export default function CourseEditComponent({ course }: { course: Course }) {
       });
       return handleApiResult(result, "Could not update course");
     },
-    onSuccess: () => {
-      toast.success("강의 정보를 저장했어요.");
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "강의 정보를 저장하는 데 실패했어요."
-      );
-    },
   });
 
   const handleTextChange =
@@ -150,14 +135,12 @@ export default function CourseEditComponent({ course }: { course: Course }) {
     try {
       const payload = buildPayload();
       await mutation.mutateAsync(payload);
-      toast.success("강의 정보를 저장했어요.");
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "강의 정보를 저장하는 데 실패했어요."
-      );
+      toast.error("강의 정보를 저장하는 데 실패했어요.");
+      return;
     }
+    toast.success("강의 정보를 저장했어요.");
+    router.refresh();
   }
 
   async function handlePublish() {
@@ -165,13 +148,12 @@ export default function CourseEditComponent({ course }: { course: Course }) {
       const payload = buildPayload();
       payload.status = "PUBLISHED";
       await mutation.mutateAsync(payload);
-      toast.success("강의가 게시되었어요.");
-      router.push(ROUTE_INSTRUCTOR_COURSES);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "강의 제출에 실패했어요."
-      );
+      toast.error("강의 제출에 실패했어요.");
+      return;
     }
+    toast.success("강의가 게시되었어요.");
+    router.push(ROUTE_INSTRUCTOR_COURSES);
   }
 
   return (
