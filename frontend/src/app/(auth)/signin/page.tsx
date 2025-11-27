@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { ROUTE_HOME, ROUTE_SIGNUP } from "@/config/routes";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function SignInPage() {
     signIn("credentials", {
       email,
       password,
-      redirectTo: "/",
+      redirectTo: ROUTE_HOME,
     });
   };
 
@@ -52,7 +53,7 @@ export default function SignInPage() {
         </button>
 
         <Link
-          href="/signup"
+          href={ROUTE_SIGNUP}
           className="px-2 py-1 rounded-sm text-center border border-1 border-gray-700">
           회원가입
         </Link>

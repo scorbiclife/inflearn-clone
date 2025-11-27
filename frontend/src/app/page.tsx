@@ -1,12 +1,13 @@
-import { auth, signOut } from "@/auth";
+import { authUser, signOut } from "@/auth";
 import Link from "next/link";
+import { ROUTE_SIGNIN } from "@/config/routes";
 
 export default async function Home() {
-  const session = await auth();
-  if (session?.user) {
+  const user = await authUser();
+  if (user) {
     return (
       <div>
-        <p>{`현재 로그인한 유저는 ${session.user.email}입니다.`}</p>
+        <p>{`현재 로그인한 유저는 ${user.email}입니다.`}</p>
         <SignOut />
       </div>
     );
@@ -14,7 +15,7 @@ export default async function Home() {
     return (
       <div>
         <p>현재 로그인 상태가 아닙니다.</p>
-        <Link href="/signin">로그인</Link>
+        <Link href={ROUTE_SIGNIN}>로그인</Link>
       </div>
     )
   }

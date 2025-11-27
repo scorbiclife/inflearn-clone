@@ -5,6 +5,7 @@ import { prisma } from "@/prisma";
 import { isValidPassword } from "./lib/password-utils";
 import * as jose from "jose";
 import { JWT } from "next-auth/jwt";
+import { User as NextUser } from "next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",
@@ -25,7 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           type: "password",
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials || !credentials.email || !credentials.password) {
           throw new Error("이메일과 비밀번호를 입력해주세요.");
         }
@@ -76,3 +77,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+
+/* Encapsulate the implementation of User behind a type */
+export type User = NextUser;
+
+export async function authUser(): Promise<User | null> {
+  const session = await auth();
+  if (!session || !session.user) {
+    return null;
+  }
+  return session.user;
+}

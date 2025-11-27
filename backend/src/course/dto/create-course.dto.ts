@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateCourseDto {
@@ -6,37 +6,37 @@ export class CreateCourseDto {
   @IsString()
   title: string;
 
-  @ApiProperty({ description: '짧은 설명' })
+  @ApiPropertyOptional({ description: '짧은 설명' })
   @IsString()
   @IsOptional()
   shortDescription?: string;
 
-  @ApiProperty({ description: '상세 설명' })
+  @ApiPropertyOptional({ description: '상세 설명' })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: '코스 썸네일 사진 URL' })
+  @ApiPropertyOptional({ description: '코스 썸네일 사진 URL' })
   @IsString()
   @IsOptional()
   thumbnailUrl?: string;
 
-  @ApiProperty({ description: '가격' })
+  @ApiPropertyOptional({ description: '가격' })
   @IsNumber()
   @IsOptional()
   price?: number;
 
-  @ApiProperty({ description: '할인 가격' })
+  @ApiPropertyOptional({ description: '할인 가격' })
   @IsNumber()
   @IsOptional()
   discountPrice?: number;
 
-  @ApiProperty({ description: '코스 레벨' })
+  @ApiPropertyOptional({ description: '코스 레벨' })
   @IsString()
   @IsOptional()
   level?: string;
 
-  @ApiProperty({ description: '코스 상태' })
+  @ApiPropertyOptional({ description: '코스 상태' })
   @IsString()
   @IsOptional()
   status?: string;
