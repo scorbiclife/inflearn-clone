@@ -3,14 +3,12 @@
 import {
   useState,
   type ChangeEvent,
-  type FormEvent,
   type ReactNode,
 } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +28,7 @@ import {
 } from "@/generated/openapi-ts";
 import { findAllCategories, updateCourse } from "@/lib/api";
 import { ROUTE_INSTRUCTOR_COURSES } from "@/config/routes";
+import CourseEditHeader from "./CourseEditHeader";
 
 function handleApiResult<T>(
   result: { error?: unknown; data?: T },
@@ -131,7 +130,11 @@ export default function CourseEditComponent({ course }: { course: Course }) {
     });
   };
 
-  function buildPayload(): UpdateCourseDto {
+  function buildPayload({
+    status,
+  }: {
+    status: "DRAFT" | "PUBLISHED";
+  }): UpdateCourseDto {
     const payload: UpdateCourseDto = {
       title: formState.title,
       shortDescription: formState.shortDescription,
@@ -140,33 +143,49 @@ export default function CourseEditComponent({ course }: { course: Course }) {
       price: formState.price,
       discountPrice: formState.discountPrice,
       level: formState.level,
-      status: "DRAFT",
+      status,
       categoryIds: formState.categoryIds,
     };
 
     return payload;
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSave() {
     try {
-      await mutation.mutateAsync(buildPayload());
+      await mutation.mutateAsync(buildPayload({ status: "DRAFT" }));
+      toast.success("강의 정보를 저장했어요.");
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
           : "강의 정보를 저장하는 데 실패했어요."
       );
-      return;
     }
-    router.push(ROUTE_INSTRUCTOR_COURSES);
+  }
+
+  async function handlePublish() {
+    try {
+      await mutation.mutateAsync(buildPayload({ status: "PUBLISHED" }));
+      toast.success("강의가 제출되었어요.");
+      router.push(ROUTE_INSTRUCTOR_COURSES);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "강의 제출에 실패했어요."
+      );
+    }
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold p-6">강의 정보 수정</h1>
+      <CourseEditHeader
+        course={course}
+        onSave={handleSave}
+        onSubmit={handlePublish}
+        isSaving={mutation.isPending}
+        isSubmitting={mutation.isPending}
+      />
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSave}
         className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="강의 제목" htmlFor="title">
@@ -288,12 +307,6 @@ export default function CourseEditComponent({ course }: { course: Course }) {
               )}
             </ScrollArea>
           </div>
-        </div>
-
-        <div className="flex items-center justify-end gap-3">
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? "저장 중..." : "저장하기"}
-          </Button>
         </div>
       </form>
     </div>
