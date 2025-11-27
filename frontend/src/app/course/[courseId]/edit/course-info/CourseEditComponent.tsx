@@ -130,11 +130,7 @@ export default function CourseEditComponent({ course }: { course: Course }) {
     });
   };
 
-  function buildPayload({
-    status,
-  }: {
-    status: "DRAFT" | "PUBLISHED";
-  }): UpdateCourseDto {
+  function buildPayload(): UpdateCourseDto {
     const payload: UpdateCourseDto = {
       title: formState.title,
       shortDescription: formState.shortDescription,
@@ -143,7 +139,7 @@ export default function CourseEditComponent({ course }: { course: Course }) {
       price: formState.price,
       discountPrice: formState.discountPrice,
       level: formState.level,
-      status,
+      status: course.status,
       categoryIds: formState.categoryIds,
     };
 
@@ -152,7 +148,8 @@ export default function CourseEditComponent({ course }: { course: Course }) {
 
   async function handleSave() {
     try {
-      await mutation.mutateAsync(buildPayload({ status: "DRAFT" }));
+      const payload = buildPayload();
+      await mutation.mutateAsync(payload);
       toast.success("강의 정보를 저장했어요.");
     } catch (error) {
       toast.error(
@@ -165,8 +162,10 @@ export default function CourseEditComponent({ course }: { course: Course }) {
 
   async function handlePublish() {
     try {
-      await mutation.mutateAsync(buildPayload({ status: "PUBLISHED" }));
-      toast.success("강의가 제출되었어요.");
+      const payload = buildPayload();
+      payload.status = "PUBLISHED";
+      await mutation.mutateAsync(payload);
+      toast.success("강의가 게시되었어요.");
       router.push(ROUTE_INSTRUCTOR_COURSES);
     } catch (error) {
       toast.error(

@@ -34,8 +34,15 @@ export async function findAllCourses() {
   return extractSerializableInfo(await courseControllerFindAll());
 }
 
-export async function findCourseById(options: { id: string }) {
-  const response = await courseControllerFindOne({ path: { id: options.id } });
+export async function findCourseById(options: {
+  id: string;
+  includeCategories: boolean;
+}) {
+  const include = options.includeCategories ? ["categories"] : [];
+  const response = await courseControllerFindOne({
+    path: { id: options.id },
+    query: { include: include.join(",") },
+  });
   return extractSerializableInfo(response);
 }
 
