@@ -1,8 +1,11 @@
 {
     "cSpell.words": [
         "authjs",
+        "cmdk",
+        "Embla",
         "inflearn",
         "mentorings",
+        "nums",
         "uuidv4"
     ],
     "prisma.pinToPrisma6": true
