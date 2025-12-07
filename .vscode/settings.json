@@ -6,7 +6,9 @@
         "inflearn",
         "mentorings",
         "nums",
-        "uuidv4"
+        "turbopack",
+        "uuidv4",
+        "vaul"
     ],
     "prisma.pinToPrisma6": true
 }
