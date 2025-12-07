@@ -1,22 +1,20 @@
 import React, { JSX } from "react";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { ROUTE_HOME, ROUTE_INSTRUCTOR, ROUTE_SIGNIN } from "@/config/routes";
-import { JWTExpired, JWTInvalid } from "jose/errors";
-import { redirect } from "next/navigation";
 import { toast } from "sonner";
 
 const NAV_ITEMS = ["강의", "로드맵", "멘토링", "커뮤니티"];
 
 export default async function Header(): Promise<JSX.Element> {
-  let session;
+  let session = null;
   try {
     session = await auth();
   } catch (error) {
-    if (error instanceof JWTExpired || error instanceof JWTInvalid) {
-      redirect("/signin");
+    if (error && typeof error === "object" && "code" in error && error.code === "JWT_SESSION_ERROR") {
+      await signOut();
     } else {
-      toast.error(error instanceof Error ? error.message : "Unknown Error");
+      toast.error("알 수 없는 오류가 발생했습니다.");
     }
   }
 
