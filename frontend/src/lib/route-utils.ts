@@ -41,3 +41,13 @@ export function isActiveRoute(
   );
 }
 
+/**
+ * Formats a course edit route with the given course ID and step
+ * @param courseId - The ID of the course
+ * @param step - The step/section identifier
+ * @returns The formatted course edit route path
+ */
+export function formatCourseEditRoute(courseId: string, step: string): string {
+  return `/course/${courseId}/edit/${step}`;
+}
+

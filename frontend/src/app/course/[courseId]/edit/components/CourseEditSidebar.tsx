@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { isActiveRoute } from "@/lib/route-utils";
+import { isActiveRoute, formatCourseEditRoute } from "@/lib/route-utils";
 
 type StepItem = {
   id: string;
@@ -26,10 +26,6 @@ type CourseEditSidebarProps = {
   courseId: string;
   completedSteps?: string[];
 };
-
-function formatCourseEditRoute(courseId: string, step: string): string {
-  return `/course/${courseId}/edit/${step}`;
-}
 
 const stepItems: Omit<StepItem, "href">[] = [
   {
