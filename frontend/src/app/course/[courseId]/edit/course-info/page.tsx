@@ -1,6 +1,6 @@
 import { findCourseById } from "@/lib/api";
 import { toast } from "sonner";
-import CourseEditComponent from "./CourseEditComponent";
+import CourseEditComponent from "../components/CourseEditComponent";
 
 export default async function EditCourseInfoPage(pageOptions: {
   params: Promise<{ courseId: string }>;

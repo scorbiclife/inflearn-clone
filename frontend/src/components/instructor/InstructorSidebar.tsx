@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { isActiveRoute } from "@/lib/route-utils";
 import {
   ROUTE_INSTRUCTOR,
   ROUTE_INSTRUCTOR_COURSES,
@@ -106,14 +107,10 @@ function SidebarItem({ item }: { item: MenuItem }) {
   const pathname = usePathname();
   const Icon = item.icon;
 
-  const normalizedPathname = pathname?.replace(/\/$/, "") || "";
-  const normalizedHref = item.href.replace(/\/$/, "");
-
-  const isActive =
-    normalizedHref === ROUTE_INSTRUCTOR
-      ? normalizedPathname === normalizedHref
-      : normalizedPathname === normalizedHref ||
-        normalizedPathname.startsWith(`${normalizedHref}/`);
+  const isActive = isActiveRoute(
+    { pathname, href: item.href },
+    { exactMatchOnly: item.href === ROUTE_INSTRUCTOR }
+  );
 
   return (
     <SidebarMenuItem>
