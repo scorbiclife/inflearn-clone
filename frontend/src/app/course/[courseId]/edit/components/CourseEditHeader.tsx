@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatCourseRoute } from "@/config/routes";
+import { formatCourseRoute, ROUTE_INSTRUCTOR_COURSES } from "@/config/routes";
 import type { Course } from "@/generated/openapi-ts";
 
 function formatStatus(status: Course["status"]): string {
@@ -38,7 +38,7 @@ export default function CourseEditHeader({
   const router = useRouter();
 
   const handleClose = () => {
-    router.back();
+    router.push(ROUTE_INSTRUCTOR_COURSES);
   };
 
   return (
