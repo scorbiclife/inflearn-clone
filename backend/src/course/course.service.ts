@@ -59,9 +59,22 @@ export class CourseService {
   }
 
   async findOne(id: string, include?: Prisma.CourseInclude) {
+    // If sections are included, automatically include lectures within each section
+    const enhancedInclude = include ? { ...include } : {};
+
+    if (enhancedInclude.sections === true) {
+      enhancedInclude.sections = {
+        include: {
+          lectures: {
+            orderBy: { order: 'asc' as const },
+          },
+        },
+      };
+    }
+
     return await this.prisma.course.findUnique({
       where: { id },
-      include,
+      include: enhancedInclude,
     });
   }
 

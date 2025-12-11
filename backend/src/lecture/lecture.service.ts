@@ -14,11 +14,24 @@ export class LectureService {
     sectionId: string;
     dto: CreateLectureDto;
   }) {
+    // Get the section to find the courseId
+    const section = await this.prisma.section.findUnique({
+      where: { id: sectionId },
+      select: { courseId: true },
+    });
+
     const order = await this.prisma.lecture.count({
       where: { sectionId },
     });
+
     return await this.prisma.lecture.create({
-      data: { ...createLectureDto, sectionId, order, description: '' },
+      data: {
+        ...createLectureDto,
+        sectionId,
+        courseId: section?.courseId,
+        order,
+        description: '',
+      },
     });
   }
 
