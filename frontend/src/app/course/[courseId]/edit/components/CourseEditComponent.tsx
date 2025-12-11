@@ -42,7 +42,6 @@ function handleApiResult<T>(
 type FormState = {
   title: string;
   shortDescription: string;
-  description: string;
   thumbnailUrl: string;
   price: number;
   discountPrice: number;
@@ -56,7 +55,6 @@ export default function CourseEditComponent({ course }: { course: Course }) {
   const [formState, setFormState] = useState<FormState>({
     title: course.title ?? "",
     shortDescription: course.shortDescription ?? "",
-    description: course.description ?? "",
     thumbnailUrl: course.thumbnailUrl ?? "",
     price: course.price ?? 0,
     discountPrice: course.discountPrice ?? 0,
@@ -119,7 +117,7 @@ export default function CourseEditComponent({ course }: { course: Course }) {
     const payload: UpdateCourseDto = {
       title: formState.title,
       shortDescription: formState.shortDescription,
-      description: formState.description,
+      description: course.description ?? undefined,
       thumbnailUrl: formState.thumbnailUrl ?? null,
       price: formState.price,
       discountPrice: formState.discountPrice,
@@ -236,16 +234,6 @@ export default function CourseEditComponent({ course }: { course: Course }) {
             onChange={handleTextChange("shortDescription")}
             placeholder="1-2줄 정도의 짧은 설명이면 충분해요!"
             className="min-h-24"
-          />
-        </Field>
-
-        <Field label="상세 설명" htmlFor="description">
-          <Textarea
-            id="description"
-            value={formState.description}
-            onChange={handleTextChange("description")}
-            placeholder="커리큘럼, 학습 목표 등을 자세히 적어 주세요."
-            className="min-h-40"
           />
         </Field>
 
