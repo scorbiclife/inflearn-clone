@@ -6,16 +6,16 @@ import { Section } from '@prisma/client';
 
 @Injectable()
 export class SectionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(
     createSectionDto: CreateSectionDto,
     courseId: string,
   ): Promise<Section> {
-    const order = await this.prisma.section.count({
+    const order = await this.prismaService.prisma.section.count({
       where: { courseId },
     });
-    return await this.prisma.section.create({
+    return await this.prismaService.prisma.section.create({
       data: {
         title: createSectionDto.title,
         description: createSectionDto.description ?? '',
@@ -26,20 +26,20 @@ export class SectionService {
   }
 
   async findOne(id: string): Promise<Section | null> {
-    return (await this.prisma.section.findUnique({ where: { id } })) || null;
+    return (await this.prismaService.prisma.section.findUnique({ where: { id } })) || null;
   }
 
   async update(
     id: string,
     updateSectionDto: UpdateSectionDto,
   ): Promise<Section | null> {
-    return await this.prisma.section.update({
+    return await this.prismaService.prisma.section.update({
       where: { id },
       data: updateSectionDto,
     });
   }
 
   async remove(id: string): Promise<void> {
-    await this.prisma.section.delete({ where: { id } });
+    await this.prismaService.prisma.section.delete({ where: { id } });
   }
 }
