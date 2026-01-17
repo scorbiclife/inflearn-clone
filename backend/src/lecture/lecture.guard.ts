@@ -2,20 +2,19 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 import { CourseAuthorizationService } from '../auth/services/course-authorization.service';
-import { UserIdService } from '../auth/services/user-id.service';
+import { getUserIdFromRequest as getUserIdFromContext } from '../lib/user-id';
 
 @Injectable()
 export class LectureCreationGuard implements CanActivate {
   constructor(
     private readonly courseAuthorizationService: CourseAuthorizationService,
-    private readonly userIdService: UserIdService,
   ) {}
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = this.userIdService.getUserIdFromRequest(request);
+    const userId = getUserIdFromContext(context);
     if (!userId) {
       return false;
     }
@@ -30,14 +29,13 @@ export class LectureCreationGuard implements CanActivate {
 export class LectureModificationGuard implements CanActivate {
   constructor(
     private readonly courseAuthorizationService: CourseAuthorizationService,
-    private readonly userIdService: UserIdService,
   ) {}
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = this.userIdService.getUserIdFromRequest(request);
+    const userId = getUserIdFromContext(context);
     if (!userId) {
       return false;
     }
