@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CourseAuthorizationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async canModifyCourseFromUser(
     courseId: string,
     userId: string,
   ): Promise<boolean> {
-    const course = await this.prisma.course.findUnique({
+    const course = await this.prismaService.prisma.course.findUnique({
       where: { id: courseId },
       select: { instructorId: true },
     });
@@ -27,7 +27,7 @@ export class CourseAuthorizationService {
     sectionId: string,
     userId: string,
   ): Promise<boolean> {
-    const section = await this.prisma.section.findUnique({
+    const section = await this.prismaService.prisma.section.findUnique({
       where: { id: sectionId },
       select: { courseId: true },
     });
@@ -53,7 +53,7 @@ export class CourseAuthorizationService {
     lectureId: string;
     userId: string;
   }): Promise<boolean> {
-    const lecture = await this.prisma.lecture.findUnique({
+    const lecture = await this.prismaService.prisma.lecture.findUnique({
       where: { id: lectureId },
       select: { sectionId: true },
     });

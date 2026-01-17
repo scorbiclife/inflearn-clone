@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createCourseDto: CreateCourseDto, userId: string) {
     const { categoryIds, title, ...rest } = createCourseDto;
@@ -19,7 +19,7 @@ export class CourseService {
       },
       instructorId: userId,
     };
-    return await this.prisma.course.create({
+    return await this.prismaService.prisma.course.create({
       data: prismaCreateCourseDto,
     });
   }
@@ -49,7 +49,7 @@ export class CourseService {
     where?: Prisma.CourseWhereInput;
     orderBy?: Prisma.CourseOrderByWithRelationInput;
   }) {
-    return await this.prisma.course.findMany({
+    return await this.prismaService.prisma.course.findMany({
       skip,
       take,
       cursor,
@@ -72,7 +72,7 @@ export class CourseService {
       };
     }
 
-    return await this.prisma.course.findUnique({
+    return await this.prismaService.prisma.course.findUnique({
       where: { id },
       include: enhancedInclude,
     });
@@ -90,14 +90,14 @@ export class CourseService {
       };
     }
 
-    return await this.prisma.course.update({
+    return await this.prismaService.prisma.course.update({
       where: { id },
       data: updateData,
     });
   }
 
   async remove(id: string) {
-    return await this.prisma.course.delete({
+    return await this.prismaService.prisma.course.delete({
       where: { id },
     });
   }

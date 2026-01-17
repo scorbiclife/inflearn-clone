@@ -3,8 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
   async findAll() {
-    return await this.prisma.courseCategory.findMany();
+    return await this.prismaService.prisma.courseCategory.findMany();
   }
 }

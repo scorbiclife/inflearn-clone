@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class LectureService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create({
     sectionId,
@@ -15,16 +15,15 @@ export class LectureService {
     dto: CreateLectureDto;
   }) {
     // Get the section to find the courseId
-    const section = await this.prisma.section.findUnique({
+    const section = await this.prismaService.prisma.section.findUnique({
       where: { id: sectionId },
       select: { courseId: true },
     });
 
-    const order = await this.prisma.lecture.count({
+    const order = await this.prismaService.prisma.lecture.count({
       where: { sectionId },
     });
-
-    return await this.prisma.lecture.create({
+    return await this.prismaService.prisma.lecture.create({
       data: {
         ...createLectureDto,
         sectionId,
@@ -36,17 +35,17 @@ export class LectureService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.lecture.findUnique({ where: { id } });
+    return await this.prismaService.prisma.lecture.findUnique({ where: { id } });
   }
 
   async update(id: string, updateLectureDto: UpdateLectureDto) {
-    return await this.prisma.lecture.update({
+    return await this.prismaService.prisma.lecture.update({
       where: { id },
       data: updateLectureDto,
     });
   }
 
   async remove(id: string) {
-    return await this.prisma.lecture.delete({ where: { id } });
+    return await this.prismaService.prisma.lecture.delete({ where: { id } });
   }
 }
