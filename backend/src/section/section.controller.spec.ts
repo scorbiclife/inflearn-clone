@@ -9,10 +9,11 @@ import {
 } from './section.guard';
 
 describe('SectionController', () => {
+  let module: TestingModule;
   let controller: SectionController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [SectionController],
       providers: [
         SectionService,
@@ -25,8 +26,14 @@ describe('SectionController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
+    await module.init();
+
     controller = module.get<SectionController>(SectionController);
   }, 60000);
+
+  afterEach(async () => {
+    await module.close();
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();

@@ -9,10 +9,11 @@ import {
 } from './lecture.guard';
 
 describe('LectureController', () => {
+  let module: TestingModule;
   let controller: LectureController;
 
   beforeEach(async () => {
-    const moduleRef: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [LectureController],
       providers: [
         LectureService,
@@ -24,8 +25,15 @@ describe('LectureController', () => {
       .overrideGuard(LectureModificationGuard)
       .useValue({ canActivate: () => true })
       .compile();
-    controller = moduleRef.get<LectureController>(LectureController);
+
+    await module.init();
+
+    controller = module.get<LectureController>(LectureController);
   }, 60000);
+
+  afterEach(async () => {
+    await module.close();
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();

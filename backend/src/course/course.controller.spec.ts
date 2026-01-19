@@ -6,10 +6,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CourseGuard } from './course.guard';
 
 describe('CourseController', () => {
+  let module: TestingModule;
   let controller: CourseController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [CourseController],
       providers: [
         CourseService,
@@ -20,8 +21,14 @@ describe('CourseController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
+    await module.init();
+
     controller = module.get<CourseController>(CourseController);
   }, 60000);
+
+  afterEach(async () => {
+    await module.close();
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
