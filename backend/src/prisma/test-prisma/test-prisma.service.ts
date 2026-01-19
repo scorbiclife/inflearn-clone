@@ -13,7 +13,8 @@ export class TestPrismaService implements OnModuleInit, OnModuleDestroy {
   public prisma: PrismaClient;
 
   async onModuleInit() {
-    await this.overwriteWithNewResources();
+    await this.initResources();
+    await this.reset();
   }
 
   async onModuleDestroy() {
@@ -22,24 +23,18 @@ export class TestPrismaService implements OnModuleInit, OnModuleDestroy {
 
   /** Implement this as a method because I'm unsure if there's a clean scope-based solution */
   async reset() {
-    await this.cleanupResources();
-    await this.overwriteWithNewResources();
+    const connectionString = this.testContainer.getConnectionUri();
+    execSync('pnpm exec prisma db push --force-reset', {
+      env: { ...process.env, DATABASE_URL: connectionString },
+    });
+    execSync('pnpm exec prisma db seed', {
+      env: { ...process.env, DATABASE_URL: connectionString },
+    });
   }
 
-  private async overwriteWithNewResources() {
+  private async initResources() {
     this.testContainer = await new PostgreSqlContainer('postgres:14').start();
     const connectionString = this.testContainer.getConnectionUri();
-
-    // Push schema and seed using CLI commands
-    execSync('npx prisma db push --skip-generate', {
-      env: { ...process.env, DATABASE_URL: connectionString },
-      stdio: 'inherit',
-    });
-    execSync('npx prisma db seed', {
-      env: { ...process.env, DATABASE_URL: connectionString },
-      stdio: 'inherit',
-    });
-
     const adapter = new PrismaPg({ connectionString });
     this.prisma = new PrismaClient({ adapter });
   }

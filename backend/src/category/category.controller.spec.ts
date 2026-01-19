@@ -5,10 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TestPrismaService } from '../prisma/test-prisma/test-prisma.service';
 
 describe('CategoryController', () => {
+  let module: TestingModule;
   let controller: CategoryController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [CategoryController],
       providers: [
         CategoryService,
@@ -16,8 +17,14 @@ describe('CategoryController', () => {
       ],
     }).compile();
 
+    await module.init();
+
     controller = module.get<CategoryController>(CategoryController);
   }, 60000);
+
+  afterEach(async () => {
+    await module.close();
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
