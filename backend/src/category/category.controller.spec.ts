@@ -1,29 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { TestPrismaService } from '../prisma/test-prisma/test-prisma.service';
+import { CategoryRepository } from './category.repository';
+import { FakeCategoryRepository } from './fake-category.repository';
 
 describe('CategoryController', () => {
-  let module: TestingModule;
   let controller: CategoryController;
+  let categoryRepository: FakeCategoryRepository;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    categoryRepository = new FakeCategoryRepository();
+
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [CategoryController],
       providers: [
         CategoryService,
-        { provide: PrismaService, useClass: TestPrismaService },
+        { provide: CategoryRepository, useValue: categoryRepository },
       ],
     }).compile();
 
-    await module.init();
-
     controller = module.get<CategoryController>(CategoryController);
-  }, 60000);
+  });
 
-  afterEach(async () => {
-    await module.close();
+  afterEach(() => {
+    categoryRepository.clear();
   });
 
   it('should be defined', () => {
