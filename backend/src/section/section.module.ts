@@ -12,5 +12,6 @@ import { PrismaSectionRepository } from './prisma-section.repository';
     { provide: SectionRepository, useClass: PrismaSectionRepository },
   ],
   imports: [CourseModule],
+  exports: [SectionRepository],
 })
 export class SectionModule {}

@@ -1,18 +1,21 @@
-import { PrismaService } from '@/src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { CourseRepository } from '../../course/course.repository';
+import { SectionRepository } from '../../section/section.repository';
+import { LectureRepository } from '../../lecture/lecture.repository';
 
 @Injectable()
 export class CourseAuthorizationService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly courseRepository: CourseRepository,
+    private readonly sectionRepository: SectionRepository,
+    private readonly lectureRepository: LectureRepository,
+  ) {}
 
   async canModifyCourseFromUser(
     courseId: string,
     userId: string,
   ): Promise<boolean> {
-    const course = await this.prismaService.prisma.course.findUnique({
-      where: { id: courseId },
-      select: { instructorId: true },
-    });
+    const course = await this.courseRepository.findUniqueWithInstructorId(courseId);
     return course?.instructorId === userId;
   }
 
@@ -27,10 +30,7 @@ export class CourseAuthorizationService {
     sectionId: string,
     userId: string,
   ): Promise<boolean> {
-    const section = await this.prismaService.prisma.section.findUnique({
-      where: { id: sectionId },
-      select: { courseId: true },
-    });
+    const section = await this.sectionRepository.findUniqueWithCourseId(sectionId);
     return section && section.courseId
       ? await this.canModifyCourseFromUser(section.courseId, userId)
       : false;
@@ -53,10 +53,7 @@ export class CourseAuthorizationService {
     lectureId: string;
     userId: string;
   }): Promise<boolean> {
-    const lecture = await this.prismaService.prisma.lecture.findUnique({
-      where: { id: lectureId },
-      select: { sectionId: true },
-    });
+    const lecture = await this.lectureRepository.findUniqueWithSectionId(lectureId);
     return lecture && lecture.sectionId
       ? await this.canModifySectionFromUser(lecture.sectionId, userId)
       : false;

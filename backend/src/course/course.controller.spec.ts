@@ -1,33 +1,33 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CourseController } from './course.controller';
 import { CourseService } from './course.service';
-import { TestPrismaService } from '../prisma/test-prisma/test-prisma.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { CourseRepository } from './course.repository';
+import { FakeCourseRepository } from './fake-course.repository';
 import { CourseGuard } from './course.guard';
 
 describe('CourseController', () => {
-  let module: TestingModule;
   let controller: CourseController;
+  let courseRepository: FakeCourseRepository;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    courseRepository = new FakeCourseRepository();
+
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [CourseController],
       providers: [
         CourseService,
-        { provide: PrismaService, useClass: TestPrismaService },
+        { provide: CourseRepository, useValue: courseRepository },
       ],
     })
       .overrideGuard(CourseGuard)
       .useValue({ canActivate: () => true })
       .compile();
 
-    await module.init();
-
     controller = module.get<CourseController>(CourseController);
-  }, 60000);
+  });
 
-  afterEach(async () => {
-    await module.close();
+  afterEach(() => {
+    courseRepository.clear();
   });
 
   it('should be defined', () => {
