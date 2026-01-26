@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLectureDto } from './dto/create-lecture.dto';
 import { UpdateLectureDto } from './dto/update-lecture.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { LectureRepository } from './lecture.repository';
+import { SectionRepository } from '../section/section.repository';
 
 @Injectable()
 export class LectureService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly lectureRepository: LectureRepository,
+    private readonly sectionRepository: SectionRepository,
+  ) {}
 
   async create({
     sectionId,
@@ -15,37 +19,27 @@ export class LectureService {
     dto: CreateLectureDto;
   }) {
     // Get the section to find the courseId
-    const section = await this.prismaService.prisma.section.findUnique({
-      where: { id: sectionId },
-      select: { courseId: true },
-    });
+    const section = await this.sectionRepository.findUniqueWithCourseId(sectionId);
 
-    const order = await this.prismaService.prisma.lecture.count({
-      where: { sectionId },
-    });
-    return await this.prismaService.prisma.lecture.create({
-      data: {
-        ...createLectureDto,
-        sectionId,
-        courseId: section?.courseId,
-        order,
-        description: '',
-      },
+    const order = await this.lectureRepository.countBySection(sectionId);
+    return await this.lectureRepository.create({
+      ...createLectureDto,
+      sectionId,
+      courseId: section?.courseId ?? null,
+      order,
+      description: '',
     });
   }
 
   async findOne(id: string) {
-    return await this.prismaService.prisma.lecture.findUnique({ where: { id } });
+    return await this.lectureRepository.findUnique(id);
   }
 
   async update(id: string, updateLectureDto: UpdateLectureDto) {
-    return await this.prismaService.prisma.lecture.update({
-      where: { id },
-      data: updateLectureDto,
-    });
+    return await this.lectureRepository.update(id, updateLectureDto);
   }
 
   async remove(id: string) {
-    return await this.prismaService.prisma.lecture.delete({ where: { id } });
+    return await this.lectureRepository.delete(id);
   }
 }

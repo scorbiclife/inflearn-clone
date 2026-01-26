@@ -1,23 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LectureController } from './lecture.controller';
 import { LectureService } from './lecture.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { TestPrismaService } from '../prisma/test-prisma/test-prisma.service';
+import { LectureRepository } from './lecture.repository';
+import { FakeLectureRepository } from './fake-lecture.repository';
+import { SectionRepository } from '../section/section.repository';
+import { FakeSectionRepository } from '../section/fake-section.repository';
 import {
   LectureCreationGuard,
   LectureModificationGuard,
 } from './lecture.guard';
 
 describe('LectureController', () => {
-  let module: TestingModule;
   let controller: LectureController;
+  let lectureRepository: FakeLectureRepository;
+  let sectionRepository: FakeSectionRepository;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    lectureRepository = new FakeLectureRepository();
+    sectionRepository = new FakeSectionRepository();
+
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [LectureController],
       providers: [
         LectureService,
-        { provide: PrismaService, useClass: TestPrismaService },
+        { provide: LectureRepository, useValue: lectureRepository },
+        { provide: SectionRepository, useValue: sectionRepository },
       ],
     })
       .overrideGuard(LectureCreationGuard)
@@ -26,13 +33,12 @@ describe('LectureController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    await module.init();
-
     controller = module.get<LectureController>(LectureController);
-  }, 60000);
+  });
 
-  afterEach(async () => {
-    await module.close();
+  afterEach(() => {
+    lectureRepository.clear();
+    sectionRepository.clear();
   });
 
   it('should be defined', () => {

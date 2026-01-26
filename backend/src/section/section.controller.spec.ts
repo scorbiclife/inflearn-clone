@@ -1,23 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SectionController } from './section.controller';
 import { SectionService } from './section.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { TestPrismaService } from '../prisma/test-prisma/test-prisma.service';
+import { SectionRepository } from './section.repository';
+import { FakeSectionRepository } from './fake-section.repository';
 import {
   SectionCreationGuard,
   SectionModificationGuard,
 } from './section.guard';
 
 describe('SectionController', () => {
-  let module: TestingModule;
   let controller: SectionController;
+  let sectionRepository: FakeSectionRepository;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    sectionRepository = new FakeSectionRepository();
+
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [SectionController],
       providers: [
         SectionService,
-        { provide: PrismaService, useClass: TestPrismaService },
+        { provide: SectionRepository, useValue: sectionRepository },
       ],
     })
       .overrideGuard(SectionCreationGuard)
@@ -26,13 +28,11 @@ describe('SectionController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    await module.init();
-
     controller = module.get<SectionController>(SectionController);
-  }, 60000);
+  });
 
-  afterEach(async () => {
-    await module.close();
+  afterEach(() => {
+    sectionRepository.clear();
   });
 
   it('should be defined', () => {

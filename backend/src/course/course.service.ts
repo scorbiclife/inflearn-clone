@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { CourseRepository, CourseFindManyInput } from './course.repository';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly courseRepository: CourseRepository) {}
 
   async create(createCourseDto: CreateCourseDto, userId: string) {
     const { categoryIds, title, ...rest } = createCourseDto;
-    const prismaCreateCourseDto = {
+    return await this.courseRepository.create({
       ...rest,
       title,
       slug: this.slugify(title),
-      categories: {
-        connect: categoryIds.map((id) => ({ id })),
-      },
+      categoryIds,
       instructorId: userId,
-    };
-    return await this.prismaService.prisma.course.create({
-      data: prismaCreateCourseDto,
     });
   }
 
@@ -36,69 +30,22 @@ export class CourseService {
     return `${slugBase}-${slugCollisionPreventionSuffix}`;
   }
 
-  async findAll({
-    skip,
-    take,
-    cursor,
-    where,
-    orderBy,
-  }: {
-    skip?: number;
-    take: number;
-    cursor?: Prisma.CourseWhereUniqueInput;
-    where?: Prisma.CourseWhereInput;
-    orderBy?: Prisma.CourseOrderByWithRelationInput;
-  }) {
-    return await this.prismaService.prisma.course.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  async findAll(params: CourseFindManyInput) {
+    return await this.courseRepository.findMany(params);
   }
 
-  async findOne(id: string, include?: Prisma.CourseInclude) {
-    // If sections are included, automatically include lectures within each section
-    const enhancedInclude = include ? { ...include } : {};
-
-    if (enhancedInclude.sections === true) {
-      enhancedInclude.sections = {
-        include: {
-          lectures: {
-            orderBy: { order: 'asc' as const },
-          },
-        },
-      };
+  async findOne(id: string, include?: { sections?: boolean }) {
+    if (include?.sections) {
+      return await this.courseRepository.findUniqueWithSections(id);
     }
-
-    return await this.prismaService.prisma.course.findUnique({
-      where: { id },
-      include: enhancedInclude,
-    });
+    return await this.courseRepository.findUnique(id);
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
-    const { categoryIds, ...courseUpdateData } = updateCourseDto;
-    const updateData: Prisma.CourseUpdateInput = {
-      ...courseUpdateData,
-    };
-
-    if (categoryIds !== undefined) {
-      updateData.categories = {
-        set: categoryIds.map((id) => ({ id })),
-      };
-    }
-
-    return await this.prismaService.prisma.course.update({
-      where: { id },
-      data: updateData,
-    });
+    return await this.courseRepository.update(id, updateCourseDto);
   }
 
   async remove(id: string) {
-    return await this.prismaService.prisma.course.delete({
-      where: { id },
-    });
+    return await this.courseRepository.delete(id);
   }
 }
